@@ -36,7 +36,7 @@ function startStaticServer() {
   });
 }
 
-const times = [0, 2, 4.5, 8.5, 12, 14.5, 18, 25, 32, 38, 43, 47];
+const times = [0, 1.5, 3.5, 6.5, 9, 11.5, 15.5, 19.5, 23.5, 27, 31];
 
 const { server, port } = await startStaticServer();
 await mkdir(OUT, { recursive: true });

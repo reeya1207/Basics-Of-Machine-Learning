@@ -6,17 +6,13 @@
   <title>#Reet_Ka_IshQ — 1 Month To Go</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
       --navy: #1a2744;
-      --navy-deep: #0f1829;
       --rose: #c48a7a;
-      --rose-soft: #e8c4b8;
       --cream: #f7f1ea;
       --ivory: #fffaf5;
-      --gold: #b8956c;
-      --muted: #6b7280;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -55,11 +51,47 @@
       position: absolute;
       inset: 0;
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
       overflow: hidden;
+      will-change: opacity, transform;
     }
 
-    .scene.active { opacity: 1; }
+    /* ——— Shared tagline ——— */
+    .tagline {
+      position: absolute;
+      left: 50%;
+      bottom: 7%;
+      transform: translateX(-50%) translateY(10px);
+      z-index: 6;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.35rem, 2.8vw, 2.15rem);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.45);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .tagline.on-light {
+      color: var(--navy);
+      text-shadow: none;
+    }
+
+    .tagline-bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 28%;
+      z-index: 5;
+      background: linear-gradient(to top, rgba(15, 24, 41, 0.72) 0%, rgba(15, 24, 41, 0.2) 55%, transparent 100%);
+      pointer-events: none;
+      opacity: 0;
+    }
 
     /* ——— Patrika ——— */
     #scene-patrika {
@@ -69,24 +101,16 @@
 
     .patrika-page {
       position: absolute;
-      inset: 6%;
+      inset: 7%;
       border: 1.5px solid rgba(26, 39, 68, 0.28);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.65), rgba(247,241,234,0.2)),
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 28px,
-          rgba(196, 138, 122, 0.04) 28px,
-          rgba(196, 138, 122, 0.04) 29px
-        );
+        linear-gradient(180deg, rgba(255,255,255,0.65), rgba(247,241,234,0.2));
       box-shadow: inset 0 0 0 10px rgba(26, 39, 68, 0.04);
-      transform-origin: center center;
     }
 
     .patrika-ornament {
       position: absolute;
-      inset: 18px;
+      inset: 16px;
       border: 1px solid rgba(26, 39, 68, 0.18);
       pointer-events: none;
     }
@@ -95,8 +119,8 @@
     .patrika-ornament::after {
       content: "";
       position: absolute;
-      width: 42px;
-      height: 42px;
+      width: 36px;
+      height: 36px;
       border: 1.5px solid var(--rose);
       opacity: 0.55;
     }
@@ -110,25 +134,23 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 1.1rem;
-      transform-style: preserve-3d;
+      gap: 0.85rem;
     }
 
     .eyebrow {
-      font-family: "Outfit", sans-serif;
       font-weight: 400;
-      letter-spacing: 0.42em;
+      letter-spacing: 0.38em;
       text-transform: uppercase;
-      font-size: clamp(0.55rem, 1.1vw, 0.78rem);
+      font-size: clamp(0.55rem, 1vw, 0.72rem);
       color: var(--rose);
     }
 
     .logo-wrap {
-      width: min(34%, 280px);
+      width: min(32%, 250px);
       aspect-ratio: 1;
       display: grid;
       place-items: center;
-      filter: drop-shadow(0 12px 28px rgba(26, 39, 68, 0.12));
+      filter: drop-shadow(0 10px 24px rgba(26, 39, 68, 0.12));
     }
 
     .logo-wrap img {
@@ -139,23 +161,17 @@
 
     .patrika-names {
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.4rem, 3.2vw, 2.4rem);
+      font-size: clamp(1.35rem, 2.8vw, 2.1rem);
       font-weight: 600;
       color: var(--navy);
-      letter-spacing: 0.04em;
-    }
-
-    .patrika-sub {
-      font-family: "Cormorant Garamond", serif;
-      font-style: italic;
-      font-size: clamp(0.95rem, 1.8vw, 1.35rem);
-      color: var(--muted);
     }
 
     .book {
       position: absolute;
       inset: 0;
       perspective: 1600px;
+      visibility: hidden;
+      opacity: 0;
     }
 
     .book-half {
@@ -164,7 +180,6 @@
       width: 50%;
       height: 100%;
       overflow: hidden;
-      backface-visibility: hidden;
       will-change: transform;
     }
 
@@ -184,20 +199,17 @@
     .book-half.right .face { right: 0; left: auto; }
 
     .patrika-page.nested {
-      /* Must match on both halves so the closed invitation seams cleanly */
-      top: 6%;
-      bottom: 6%;
-      left: 6%;
-      right: 6%;
-      width: auto;
-      height: auto;
+      top: 7%;
+      bottom: 7%;
+      left: 7%;
+      right: 7%;
     }
 
     .spine {
       position: absolute;
       left: 50%;
-      top: 8%;
-      bottom: 8%;
+      top: 10%;
+      bottom: 10%;
       width: 2px;
       transform: translateX(-50%);
       background: linear-gradient(180deg, transparent, rgba(26,39,68,0.28), transparent);
@@ -215,32 +227,32 @@
     }
 
     .cal-card {
-      width: min(72%, 720px);
+      width: min(68%, 680px);
       background: var(--ivory);
-      border: 1px solid rgba(26, 39, 68, 0.12);
-      padding: clamp(1.2rem, 2.5vw, 2rem);
-      box-shadow: 0 20px 50px rgba(26, 39, 68, 0.1);
+      border: 1px solid rgba(26, 39, 68, 0.1);
+      padding: clamp(1.1rem, 2.2vw, 1.8rem);
+      box-shadow: 0 18px 44px rgba(26, 39, 68, 0.1);
       position: relative;
+      will-change: transform, opacity;
     }
 
     .cal-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
       border-bottom: 1px solid rgba(26, 39, 68, 0.1);
-      padding-bottom: 0.75rem;
+      padding-bottom: 0.65rem;
     }
 
     .cal-month {
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
       font-weight: 700;
-      color: var(--navy);
     }
 
     .cal-year {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       letter-spacing: 0.2em;
       color: var(--rose);
       text-transform: uppercase;
@@ -249,18 +261,18 @@
     .cal-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 0.35rem;
+      gap: 0.3rem;
       position: relative;
       z-index: 1;
     }
 
     .cal-dow {
       text-align: center;
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       letter-spacing: 0.12em;
-      color: var(--muted);
+      color: #8b919c;
       text-transform: uppercase;
-      padding: 0.35rem 0;
+      padding: 0.3rem 0;
     }
 
     .cal-day {
@@ -268,166 +280,46 @@
       display: grid;
       place-items: center;
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(0.95rem, 1.6vw, 1.25rem);
-      color: var(--navy);
+      font-size: clamp(0.9rem, 1.5vw, 1.2rem);
       position: relative;
       border-radius: 6px;
     }
 
     .cal-day.empty { visibility: hidden; }
-    .cal-day.muted { color: #b0b6c0; }
-
-    .cal-day.wedding span {
-      font-weight: 700;
-    }
-
-    .cal-day.wedding.lit span {
-      color: #fff;
-    }
+    .cal-day.wedding.lit span { color: #fff; font-weight: 700; }
+    .cal-day span { position: relative; z-index: 1; }
 
     .day-marker {
       position: absolute;
-      width: clamp(34px, 4.2vw, 48px);
-      height: clamp(34px, 4.2vw, 48px);
+      width: clamp(32px, 4vw, 46px);
+      height: clamp(32px, 4vw, 46px);
       border-radius: 8px;
       background: var(--navy);
       z-index: 0;
       transform: translate(-50%, -50%);
       box-shadow: 0 8px 18px rgba(26, 39, 68, 0.28);
       pointer-events: none;
-    }
-
-    .cal-day span { position: relative; z-index: 1; }
-
-    .cal-caption {
-      margin-top: 1.1rem;
-      text-align: center;
-      font-family: "Cormorant Garamond", serif;
-      font-style: italic;
-      font-size: clamp(1rem, 2vw, 1.35rem);
-      color: var(--navy);
       opacity: 0;
     }
 
-    /* ——— Story cards (travel-app inspired, not copied) ——— */
-    .story-scene {
-      background: #f4f0ea;
-    }
-
-    .story-bg {
+    /* ——— Full-bleed story / couple ——— */
+    .bleed-scene .story-bg {
       position: absolute;
       inset: 0;
       background-size: cover;
       background-position: center;
-      transform: scale(1.08);
-      filter: saturate(1.05) contrast(1.02);
+      transform: scale(1.06);
+      will-change: transform;
     }
 
-    .story-veil {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(15,24,41,0.55) 0%, rgba(15,24,41,0.15) 55%, transparent 100%);
-    }
-
-    .story-panel {
-      position: absolute;
-      left: 5%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: min(38%, 420px);
-      background: rgba(255, 250, 245, 0.92);
-      backdrop-filter: blur(8px);
-      padding: clamp(1.1rem, 2.2vw, 1.8rem);
-      border-left: 3px solid var(--rose);
-      box-shadow: 0 18px 40px rgba(15, 24, 41, 0.18);
-    }
-
-    .story-kicker {
-      font-size: 0.7rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--rose);
-      margin-bottom: 0.55rem;
-    }
-
-    .story-title {
-      font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.5rem, 3vw, 2.35rem);
-      font-weight: 700;
-      line-height: 1.15;
-      color: var(--navy);
-      margin-bottom: 0.55rem;
-    }
-
-    .story-body {
-      font-size: clamp(0.85rem, 1.3vw, 1.05rem);
-      color: #4b5563;
-      line-height: 1.45;
-      font-weight: 300;
-    }
-
-    .story-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-top: 0.9rem;
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--navy);
-      opacity: 0.75;
-    }
-
-    .story-chip::before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--rose);
-    }
-
-    /* ——— Couple reveal ——— */
     #scene-couple {
       background:
         radial-gradient(circle at 70% 40%, #fff 0%, #f3ebe2 50%, #e4d5c4 100%);
     }
 
-    .couple-layout {
+    .couple-stage {
       position: absolute;
       inset: 0;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      align-items: center;
-      padding: 4% 5%;
-      gap: 3%;
-    }
-
-    .couple-copy { z-index: 2; }
-
-    .countdown {
-      font-family: "Cormorant Garamond", serif;
-      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
-      font-weight: 700;
-      color: var(--navy);
-      line-height: 1.05;
-      margin: 0.4rem 0 0.7rem;
-    }
-
-    .countdown em {
-      font-style: italic;
-      color: var(--rose);
-    }
-
-    .couple-meta {
-      font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-      color: var(--muted);
-      max-width: 28ch;
-      line-height: 1.5;
-    }
-
-    .couple-frames {
-      position: relative;
-      height: 100%;
       display: grid;
       place-items: center;
     }
@@ -435,9 +327,10 @@
     .polaroid {
       position: absolute;
       background: #fff;
-      padding: 3% 3% 10%;
-      box-shadow: 0 18px 40px rgba(26, 39, 68, 0.18);
-      width: 58%;
+      padding: 2.5% 2.5% 8%;
+      box-shadow: 0 16px 36px rgba(26, 39, 68, 0.16);
+      width: 34%;
+      will-change: transform, opacity;
     }
 
     .polaroid img {
@@ -448,14 +341,14 @@
     }
 
     .polaroid.a {
-      transform: rotate(-6deg) translate(-8%, 2%);
+      transform: rotate(-6deg) translate(-28%, 4%);
       z-index: 1;
     }
 
     .polaroid.b {
-      transform: rotate(5deg) translate(18%, -4%);
+      transform: rotate(5deg) translate(22%, -2%);
       z-index: 2;
-      width: 52%;
+      width: 30%;
     }
 
     /* ——— Finale ——— */
@@ -471,12 +364,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.65rem;
       padding: 2rem;
+      will-change: transform, opacity;
     }
 
     .finale-logo {
-      width: min(28%, 220px);
+      width: min(26%, 200px);
       aspect-ratio: 1;
     }
 
@@ -488,13 +382,12 @@
 
     .finale-title {
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-size: clamp(1.7rem, 3.6vw, 2.7rem);
       font-weight: 700;
-      color: var(--navy);
     }
 
     .finale-date {
-      font-size: clamp(0.95rem, 1.6vw, 1.2rem);
+      font-size: clamp(0.85rem, 1.4vw, 1.05rem);
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--rose);
@@ -503,18 +396,9 @@
     .finale-place {
       font-family: "Cormorant Garamond", serif;
       font-style: italic;
-      font-size: clamp(1.1rem, 2vw, 1.5rem);
-      color: var(--navy);
+      font-size: clamp(1.05rem, 1.9vw, 1.4rem);
     }
 
-    .finale-tag {
-      margin-top: 0.4rem;
-      font-size: 0.95rem;
-      color: var(--navy);
-      opacity: 0.8;
-    }
-
-    /* HUD / controls for preview */
     #hud {
       position: fixed;
       left: 16px;
@@ -542,16 +426,14 @@
       font-size: 12px;
     }
 
-    #hud.hidden { display: none; }
-
     .render-mode #hud { display: none !important; }
   </style>
 </head>
 <body>
   <div id="stage-wrap">
     <div id="stage">
-      <!-- 1. Patrika (invitation) opens from the center -->
-      <section class="scene" id="scene-patrika" data-start="0" data-end="7.5">
+      <!-- 1. Patrika -->
+      <section class="scene" id="scene-patrika" data-start="0" data-end="5.2">
         <div class="patrika-page" id="patrika-closed">
           <div class="patrika-ornament"></div>
           <div class="patrika-inner">
@@ -560,7 +442,6 @@
               <img src="assets/logo.jpg" alt="#Reet_Ka_IshQ wedding logo" />
             </div>
             <div class="patrika-names">#Reet_Ka_IshQ</div>
-            <div class="patrika-sub">One month to go…</div>
           </div>
         </div>
         <div class="book" id="book">
@@ -573,7 +454,6 @@
                   <div class="eyebrow">A Celebration of Love</div>
                   <div class="logo-wrap"><img src="assets/logo.jpg" alt="" /></div>
                   <div class="patrika-names">#Reet_Ka_IshQ</div>
-                  <div class="patrika-sub">One month to go…</div>
                 </div>
               </div>
             </div>
@@ -586,107 +466,78 @@
                   <div class="eyebrow">A Celebration of Love</div>
                   <div class="logo-wrap"><img src="assets/logo.jpg" alt="" /></div>
                   <div class="patrika-names">#Reet_Ka_IshQ</div>
-                  <div class="patrika-sub">One month to go…</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <div class="tagline on-light" data-tag>One Month To Go</div>
       </section>
 
       <!-- 2. Calendar -->
-      <section class="scene" id="scene-calendar" data-start="7.2" data-end="16.5">
-        <div class="cal-card">
+      <section class="scene" id="scene-calendar" data-start="4.6" data-end="10.4">
+        <div class="cal-card" id="cal-card">
           <div class="cal-header">
             <div class="cal-month">December</div>
             <div class="cal-year">2026</div>
           </div>
           <div class="cal-grid" id="cal-grid"></div>
           <div class="day-marker" id="day-marker"></div>
-          <div class="cal-caption" id="cal-caption">Save the date — Friday, 4 December</div>
         </div>
+        <div class="tagline on-light" data-tag>The Date Is Set</div>
       </section>
 
       <!-- 3. Couple -->
-      <section class="scene" id="scene-couple" data-start="16" data-end="23">
-        <div class="couple-layout">
-          <div class="couple-copy">
-            <div class="eyebrow">The Couple</div>
-            <div class="countdown">1 Month<br /><em>To Go</em></div>
-            <p class="couple-meta">
-              From America &amp; India — meeting under the misty hills of Mahabaleshwar for a joyful Indian wedding.
-            </p>
+      <section class="scene" id="scene-couple" data-start="9.8" data-end="14.6">
+        <div class="couple-stage">
+          <div class="polaroid a">
+            <img src="assets/couple-ghibli-portrait.jpg" alt="Couple" />
           </div>
-          <div class="couple-frames">
-            <div class="polaroid a">
-              <img src="assets/couple-ghibli-portrait.jpg" alt="Animated couple portrait" />
-            </div>
-            <div class="polaroid b">
-              <img src="assets/couple-ghibli-walk.jpg" alt="Animated couple walking" />
-            </div>
+          <div class="polaroid b">
+            <img src="assets/couple-ghibli-walk.jpg" alt="Couple walking" />
           </div>
         </div>
+        <div class="tagline on-light" data-tag>Two Worlds, One Wedding</div>
       </section>
 
       <!-- 4. Plane -->
-      <section class="scene story-scene" id="scene-plane" data-start="22.5" data-end="29.5">
+      <section class="scene bleed-scene" id="scene-plane" data-start="14" data-end="18.6">
         <div class="story-bg" style="background-image:url('assets/scene-plane-america.jpg')"></div>
-        <div class="story-veil"></div>
-        <div class="story-panel">
-          <div class="story-kicker">Groom’s Side</div>
-          <div class="story-title">Flying in from America</div>
-          <p class="story-body">Across oceans and time zones — family takes to the skies, hearts already homeward bound for Mahabaleshwar.</p>
-          <div class="story-chip">Journey begins</div>
-        </div>
+        <div class="tagline-bar" data-bar></div>
+        <div class="tagline" data-tag>From America, With Love</div>
       </section>
 
       <!-- 5. Cars -->
-      <section class="scene story-scene" id="scene-cars" data-start="29" data-end="35.5">
+      <section class="scene bleed-scene" id="scene-cars" data-start="18" data-end="22.4">
         <div class="story-bg" style="background-image:url('assets/scene-cars-mahabaleshwar.jpg')"></div>
-        <div class="story-veil"></div>
-        <div class="story-panel">
-          <div class="story-kicker">The Arrival</div>
-          <div class="story-title">Winding into the hills</div>
-          <p class="story-body">Cars climb misty roads, marigold garlands fluttering — every turn bringing loved ones closer to the venue.</p>
-          <div class="story-chip">Mahabaleshwar</div>
-        </div>
+        <div class="tagline-bar" data-bar></div>
+        <div class="tagline" data-tag>The Hills Are Calling</div>
       </section>
 
       <!-- 6. Shopping -->
-      <section class="scene story-scene" id="scene-shop" data-start="35" data-end="41">
+      <section class="scene bleed-scene" id="scene-shop" data-start="21.8" data-end="26.2">
         <div class="story-bg" style="background-image:url('assets/scene-shopping.jpg')"></div>
-        <div class="story-veil" style="background:linear-gradient(90deg, rgba(15,24,41,0.5) 0%, rgba(15,24,41,0.12) 60%, transparent 100%)"></div>
-        <div class="story-panel">
-          <div class="story-kicker">Shaadi Prep</div>
-          <div class="story-title">Silks, gold &amp; sparkle</div>
-          <p class="story-body">Lehengas, sherwanis, and heirloom jewellery — the colours of an Indian wedding coming to life.</p>
-          <div class="story-chip">Clothes · Jewellery</div>
-        </div>
+        <div class="tagline-bar" data-bar></div>
+        <div class="tagline" data-tag>Suit Up, Shop Up, Show Up!</div>
       </section>
 
       <!-- 7. Venue -->
-      <section class="scene story-scene" id="scene-venue" data-start="40.5" data-end="45.5">
+      <section class="scene bleed-scene" id="scene-venue" data-start="25.6" data-end="29.6">
         <div class="story-bg" style="background-image:url('assets/scene-venue.jpg')"></div>
-        <div class="story-veil"></div>
-        <div class="story-panel">
-          <div class="story-kicker">The Venue</div>
-          <div class="story-title">Mahabaleshwar awaits</div>
-          <p class="story-body">Under drifting clouds and green valleys, a mandap of flowers is ready for Reet &amp; IshQ.</p>
-          <div class="story-chip">04 December 2026</div>
-        </div>
+        <div class="tagline-bar" data-bar></div>
+        <div class="tagline" data-tag>Mahabaleshwar Awaits</div>
       </section>
 
       <!-- 8. Finale -->
-      <section class="scene" id="scene-finale" data-start="45" data-end="50">
-        <div class="finale-inner">
-          <div class="eyebrow">See you there</div>
+      <section class="scene" id="scene-finale" data-start="29" data-end="34">
+        <div class="finale-inner" id="finale-inner">
+          <div class="eyebrow">See You There</div>
           <div class="finale-logo">
             <img src="assets/logo.jpg" alt="Wedding logo" />
           </div>
           <div class="finale-title">#Reet_Ka_IshQ</div>
           <div class="finale-date">4 December 2026</div>
           <div class="finale-place">Mahabaleshwar</div>
-          <div class="finale-tag">One month to go · Save the date</div>
         </div>
       </section>
     </div>
@@ -694,25 +545,21 @@
 
   <div id="hud">
     <button id="btn-play" type="button">Play</button>
-    <span id="time-label">0.0s / 50s</span>
+    <span id="time-label">0.0s / 34s</span>
   </div>
 
   <script>
-    const DURATION = 50;
+    const DURATION = 34;
     const scenes = [...document.querySelectorAll(".scene")];
 
-    // Build December 2026 calendar (Tue = 1)
     const grid = document.getElementById("cal-grid");
-    const dows = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    dows.forEach((d) => {
+    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((d) => {
       const el = document.createElement("div");
       el.className = "cal-dow";
       el.textContent = d;
       grid.appendChild(el);
     });
-    // Dec 1 2026 is Tuesday → offset 2 from Sunday
-    const offset = 2;
-    for (let i = 0; i < offset; i++) {
+    for (let i = 0; i < 2; i++) {
       const el = document.createElement("div");
       el.className = "cal-day empty";
       grid.appendChild(el);
@@ -726,17 +573,26 @@
     }
 
     const marker = document.getElementById("day-marker");
-    const caption = document.getElementById("cal-caption");
     const patrikaClosed = document.getElementById("patrika-closed");
     const book = document.getElementById("book");
     const bookLeft = document.getElementById("book-left");
     const bookRight = document.getElementById("book-right");
+    const spine = document.getElementById("spine");
+    const calCard = document.getElementById("cal-card");
+    const finaleInner = document.getElementById("finale-inner");
 
-    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-    function easeInOut(t) {
-      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-    }
-    function lerp(a, b, t) { return a + (b - a) * t; }
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const lerp = (a, b, t) => a + (b - a) * t;
+    // Smoothstep — snappier than cubic ease for quicker cuts
+    const ease = (t) => {
+      const x = clamp(t, 0, 1);
+      return x * x * (3 - 2 * x);
+    };
+    // Slightly punchier ease for entrances
+    const easeOut = (t) => {
+      const x = clamp(t, 0, 1);
+      return 1 - Math.pow(1 - x, 2.4);
+    };
 
     function dayCellCenter(day) {
       const cell = grid.querySelector(`[data-day="${day}"]`);
@@ -751,30 +607,57 @@
     }
 
     function sceneOpacity(t, start, end) {
-      const fadeIn = start <= 0 ? 0 : 0.55;
-      const fadeOut = 0.55;
+      const fadeIn = start <= 0 ? 0 : 0.32;
+      const fadeOut = 0.32;
       if (t < start || t > end) return 0;
-      if (fadeIn > 0 && t < start + fadeIn) return easeInOut((t - start) / fadeIn);
-      if (t > end - fadeOut) return easeInOut((end - t) / fadeOut);
+      if (fadeIn > 0 && t < start + fadeIn) return ease((t - start) / fadeIn);
+      if (t > end - fadeOut) return ease((end - t) / fadeOut);
       return 1;
     }
 
+    function tagProgress(t, start, end) {
+      // Appear quickly after scene starts, hold, soft exit with scene
+      const inStart = start + (start <= 0 ? 0.35 : 0.28);
+      const inDur = 0.45;
+      const outStart = end - 0.4;
+      if (t < inStart) return 0;
+      if (t < inStart + inDur) return easeOut((t - inStart) / inDur);
+      if (t < outStart) return 1;
+      return 1 - ease((t - outStart) / 0.4);
+    }
+
     function render(t) {
-      // Scene visibility
       scenes.forEach((s) => {
         const start = parseFloat(s.dataset.start);
         const end = parseFloat(s.dataset.end);
         const o = sceneOpacity(t, start, end);
         s.style.opacity = String(o);
-        s.classList.toggle("active", o > 0.01);
         s.style.visibility = o > 0.001 ? "visible" : "hidden";
+
+        // Soft scale drift during crossfade for smoother handoff
+        const mid = (start + end) / 2;
+        const drift = o > 0 ? lerp(1.012, 1, clamp(1 - Math.abs(t - mid) / ((end - start) / 2), 0, 1)) : 1;
+        if (!s.classList.contains("bleed-scene") && s.id !== "scene-patrika") {
+          // keep calendars/couple stable; bleed scenes use Ken Burns on bg
+        }
+
+        const tag = s.querySelector("[data-tag]");
+        const bar = s.querySelector("[data-bar]");
+        if (tag) {
+          const tp = tagProgress(t, start, end) * o;
+          tag.style.opacity = String(tp);
+          tag.style.transform = `translateX(-50%) translateY(${lerp(12, 0, tp)}px)`;
+        }
+        if (bar) {
+          const tp = tagProgress(t, start, end) * o;
+          bar.style.opacity = String(tp * 0.95);
+        }
       });
 
-      // Solid card until open, then split halves fold outward
-      const openT = clamp((t - 3.6) / 2.6, 0, 1);
-      const openE = easeInOut(openT);
-      const spine = document.getElementById("spine");
-      if (t < 3.55) {
+      // Patrika open — quicker fold
+      const openT = clamp((t - 2.4) / 1.7, 0, 1);
+      const openE = ease(openT);
+      if (t < 2.35) {
         patrikaClosed.style.opacity = "1";
         patrikaClosed.style.visibility = "visible";
         book.style.opacity = "0";
@@ -784,83 +667,69 @@
         patrikaClosed.style.visibility = "hidden";
         book.style.opacity = "1";
         book.style.visibility = "visible";
-        bookLeft.style.transform = `rotateY(${lerp(0, -88, openE)}deg)`;
-        bookRight.style.transform = `rotateY(${lerp(0, 88, openE)}deg)`;
-        spine.style.opacity = String(lerp(0.85, 0.15, openE));
-        const fadeOut = clamp((t - 6.5) / 1.0, 0, 1);
-        book.style.filter = `brightness(${lerp(1, 0.9, fadeOut)})`;
+        bookLeft.style.transform = `rotateY(${lerp(0, -86, openE)}deg)`;
+        bookRight.style.transform = `rotateY(${lerp(0, 86, openE)}deg)`;
+        spine.style.opacity = String(lerp(0.8, 0.12, openE));
       }
 
-      // Calendar marker: day 1 → 4 between 9s and 14.5s
+      // Calendar marker 1 → 4
       const cal = document.getElementById("scene-calendar");
-      if (cal.classList.contains("active")) {
-        const moveT = clamp((t - 9.0) / 5.0, 0, 1);
-        const dayFloat = lerp(1, 4, easeInOut(moveT));
+      if (cal.style.visibility !== "hidden") {
+        const enter = clamp((t - 4.7) / 0.4, 0, 1);
+        calCard.style.opacity = String(easeOut(enter));
+        calCard.style.transform = `translateY(${lerp(18, 0, easeOut(enter))}px) scale(${lerp(0.97, 1, easeOut(enter))})`;
+
+        const moveT = clamp((t - 5.5) / 3.2, 0, 1);
+        const dayFloat = lerp(1, 4, ease(moveT));
         const dayA = Math.floor(dayFloat);
         const dayB = Math.min(4, dayA + 1);
         const frac = dayFloat - dayA;
         const a = dayCellCenter(dayA);
         const b = dayCellCenter(dayB);
-        const x = lerp(a.x, b.x, frac);
-        const y = lerp(a.y, b.y, frac);
-        marker.style.left = `${x}px`;
-        marker.style.top = `${y}px`;
-        marker.style.opacity = t < 8.2 ? "0" : "1";
+        marker.style.left = `${lerp(a.x, b.x, frac)}px`;
+        marker.style.top = `${lerp(a.y, b.y, frac)}px`;
+        marker.style.opacity = t < 5.35 ? "0" : String(easeOut(clamp((t - 5.35) / 0.25, 0, 1)));
 
         const weddingCell = grid.querySelector('[data-day="4"]');
         if (weddingCell) {
-          weddingCell.classList.toggle("lit", moveT > 0.92);
-          // Keep the "4" readable: white on marker once lit
+          weddingCell.classList.toggle("lit", moveT > 0.9);
           const span = weddingCell.querySelector("span");
-          if (span) span.style.color = moveT > 0.92 ? "#fff" : "";
+          if (span) span.style.color = moveT > 0.9 ? "#fff" : "";
         }
-        caption.style.opacity = moveT > 0.85 ? String(easeInOut(clamp((moveT - 0.85) / 0.15, 0, 1))) : "0";
       }
 
-      // Ken Burns on story backgrounds
+      // Couple polaroids
+      const couple = document.getElementById("scene-couple");
+      if (couple.style.visibility !== "hidden") {
+        const start = 9.8;
+        const local = clamp((t - start) / 0.55, 0, 1);
+        const e = easeOut(local);
+        const a = couple.querySelector(".polaroid.a");
+        const b = couple.querySelector(".polaroid.b");
+        a.style.opacity = String(e);
+        b.style.opacity = String(clamp((local - 0.12) / 0.7, 0, 1));
+        a.style.transform = `rotate(${lerp(-10, -6, e)}deg) translate(${lerp(-34, -28, e)}%, ${lerp(10, 4, e)}%)`;
+        const e2 = easeOut(clamp((local - 0.12) / 0.7, 0, 1));
+        b.style.transform = `rotate(${lerp(10, 5, e2)}deg) translate(${lerp(30, 22, e2)}%, ${lerp(-8, -2, e2)}%)`;
+      }
+
+      // Ken Burns on story backgrounds — gentle, continuous
       document.querySelectorAll(".story-bg").forEach((bg, i) => {
         const parent = bg.closest(".scene");
         const start = parseFloat(parent.dataset.start);
         const end = parseFloat(parent.dataset.end);
-        const local = clamp((t - start) / (end - start), 0, 1);
-        const scale = lerp(1.08, 1.0, easeInOut(local));
-        const x = lerp(i % 2 === 0 ? -1.5 : 1.5, i % 2 === 0 ? 1.2 : -1.2, local);
+        const local = clamp((t - start) / Math.max(0.001, end - start), 0, 1);
+        const scale = lerp(1.07, 1.0, ease(local));
+        const x = lerp(i % 2 === 0 ? -1.2 : 1.2, i % 2 === 0 ? 1 : -1, local);
         bg.style.transform = `scale(${scale}) translateX(${x}%)`;
       });
 
-      // Story panels slide
-      document.querySelectorAll(".story-panel").forEach((p) => {
-        const parent = p.closest(".scene");
-        const start = parseFloat(parent.dataset.start);
-        const local = clamp((t - start) / 0.7, 0, 1);
-        const e = easeInOut(local);
-        p.style.opacity = String(e);
-        p.style.transform = `translateY(-50%) translateX(${lerp(-24, 0, e)}px)`;
-      });
-
-      // Couple polaroids
-      const couple = document.getElementById("scene-couple");
-      if (couple.classList.contains("active")) {
-        const start = 16;
-        const local = clamp((t - start) / 1.2, 0, 1);
-        const e = easeInOut(local);
-        const a = couple.querySelector(".polaroid.a");
-        const b = couple.querySelector(".polaroid.b");
-        a.style.opacity = String(e);
-        b.style.opacity = String(clamp((local - 0.15) / 0.85, 0, 1));
-        a.style.transform = `rotate(${lerp(-12, -6, e)}deg) translate(${lerp(-16, -8, e)}%, ${lerp(8, 2, e)}%)`;
-        b.style.transform = `rotate(${lerp(12, 5, e)}deg) translate(${lerp(28, 18, e)}%, ${lerp(-10, -4, e)}%)`;
-      }
-
-      // Finale fade-up
-      const finale = document.getElementById("scene-finale");
-      if (finale.classList.contains("active")) {
-        const start = 45;
-        const local = clamp((t - start) / 1.0, 0, 1);
-        const e = easeInOut(local);
-        const inner = finale.querySelector(".finale-inner");
-        inner.style.opacity = String(e);
-        inner.style.transform = `translateY(${lerp(18, 0, e)}px)`;
+      // Finale
+      if (document.getElementById("scene-finale").style.visibility !== "hidden") {
+        const local = clamp((t - 29) / 0.55, 0, 1);
+        const e = easeOut(local);
+        finaleInner.style.opacity = String(e);
+        finaleInner.style.transform = `translateY(${lerp(14, 0, e)}px)`;
       }
 
       document.getElementById("time-label").textContent = `${t.toFixed(1)}s / ${DURATION}s`;
@@ -904,7 +773,6 @@
       if (playing) pause(); else play();
     });
 
-    // API for renderer
     window.seekTo = (t) => {
       pause();
       current = clamp(t, 0, DURATION);
@@ -914,28 +782,17 @@
     window.playVideo = play;
     window.__ready = true;
 
-    // Initial layout pass after fonts/images
     function boot() {
       render(0);
-      // Re-layout marker after images
       requestAnimationFrame(() => render(0));
     }
 
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(boot);
-    } else {
-      boot();
-    }
+    if (document.fonts?.ready) document.fonts.ready.then(boot);
+    else boot();
 
-    // Autoplay when ?autoplay=1
     const params = new URLSearchParams(location.search);
-    if (params.has("render")) {
-      document.body.classList.add("render-mode");
-      document.getElementById("hud").classList.add("hidden");
-    }
-    if (params.has("autoplay")) {
-      window.addEventListener("load", () => setTimeout(play, 400));
-    }
+    if (params.has("render")) document.body.classList.add("render-mode");
+    if (params.has("autoplay")) window.addEventListener("load", () => setTimeout(play, 300));
   </script>
 </body>
 </html>
