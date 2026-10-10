@@ -184,13 +184,14 @@
     .book-half.right .face { right: 0; left: auto; }
 
     .patrika-page.nested {
-      inset: 6% 3%;
+      /* Must match on both halves so the closed invitation seams cleanly */
+      top: 6%;
+      bottom: 6%;
+      left: 6%;
+      right: 6%;
       width: auto;
       height: auto;
     }
-
-    .book-half.left .patrika-page.nested { left: 12%; right: 6%; }
-    .book-half.right .patrika-page.nested { left: 6%; right: 12%; }
 
     .spine {
       position: absolute;
@@ -249,6 +250,8 @@
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       gap: 0.35rem;
+      position: relative;
+      z-index: 1;
     }
 
     .cal-dow {
@@ -274,9 +277,12 @@
     .cal-day.empty { visibility: hidden; }
     .cal-day.muted { color: #b0b6c0; }
 
-    .cal-day.wedding {
-      color: #fff;
+    .cal-day.wedding span {
       font-weight: 700;
+    }
+
+    .cal-day.wedding.lit span {
+      color: #fff;
     }
 
     .day-marker {
@@ -288,7 +294,7 @@
       z-index: 0;
       transform: translate(-50%, -50%);
       box-shadow: 0 8px 18px rgba(26, 39, 68, 0.28);
-      transition: none;
+      pointer-events: none;
     }
 
     .cal-day span { position: relative; z-index: 1; }
@@ -546,6 +552,17 @@
     <div id="stage">
       <!-- 1. Patrika (invitation) opens from the center -->
       <section class="scene" id="scene-patrika" data-start="0" data-end="7.5">
+        <div class="patrika-page" id="patrika-closed">
+          <div class="patrika-ornament"></div>
+          <div class="patrika-inner">
+            <div class="eyebrow">A Celebration of Love</div>
+            <div class="logo-wrap">
+              <img src="assets/logo.jpg" alt="#Reet_Ka_IshQ wedding logo" />
+            </div>
+            <div class="patrika-names">#Reet_Ka_IshQ</div>
+            <div class="patrika-sub">One month to go…</div>
+          </div>
+        </div>
         <div class="book" id="book">
           <div class="spine" id="spine"></div>
           <div class="book-half left" id="book-left">
@@ -554,9 +571,7 @@
                 <div class="patrika-ornament"></div>
                 <div class="patrika-inner">
                   <div class="eyebrow">A Celebration of Love</div>
-                  <div class="logo-wrap">
-                    <img src="assets/logo.jpg" alt="" />
-                  </div>
+                  <div class="logo-wrap"><img src="assets/logo.jpg" alt="" /></div>
                   <div class="patrika-names">#Reet_Ka_IshQ</div>
                   <div class="patrika-sub">One month to go…</div>
                 </div>
@@ -569,9 +584,7 @@
                 <div class="patrika-ornament"></div>
                 <div class="patrika-inner">
                   <div class="eyebrow">A Celebration of Love</div>
-                  <div class="logo-wrap">
-                    <img src="assets/logo.jpg" alt="" />
-                  </div>
+                  <div class="logo-wrap"><img src="assets/logo.jpg" alt="" /></div>
                   <div class="patrika-names">#Reet_Ka_IshQ</div>
                   <div class="patrika-sub">One month to go…</div>
                 </div>
@@ -714,6 +727,8 @@
 
     const marker = document.getElementById("day-marker");
     const caption = document.getElementById("cal-caption");
+    const patrikaClosed = document.getElementById("patrika-closed");
+    const book = document.getElementById("book");
     const bookLeft = document.getElementById("book-left");
     const bookRight = document.getElementById("book-right");
 
@@ -736,10 +751,11 @@
     }
 
     function sceneOpacity(t, start, end) {
-      const fade = 0.55;
+      const fadeIn = start <= 0 ? 0 : 0.55;
+      const fadeOut = 0.55;
       if (t < start || t > end) return 0;
-      if (t < start + fade) return easeInOut((t - start) / fade);
-      if (t > end - fade) return easeInOut((end - t) / fade);
+      if (fadeIn > 0 && t < start + fadeIn) return easeInOut((t - start) / fadeIn);
+      if (t > end - fadeOut) return easeInOut((end - t) / fadeOut);
       return 1;
     }
 
@@ -754,15 +770,26 @@
         s.style.visibility = o > 0.001 ? "visible" : "hidden";
       });
 
-      // Patrika open from center (~3.6s → 6.8s)
+      // Solid card until open, then split halves fold outward
       const openT = clamp((t - 3.6) / 2.6, 0, 1);
       const openE = easeInOut(openT);
       const spine = document.getElementById("spine");
-      bookLeft.style.transform = `rotateY(${lerp(0, -88, openE)}deg)`;
-      bookRight.style.transform = `rotateY(${lerp(0, 88, openE)}deg)`;
-      spine.style.opacity = t < 3.5 ? "0" : String(lerp(0.85, 0.2, openE));
-      const fadeOut = clamp((t - 6.5) / 1.0, 0, 1);
-      document.getElementById("book").style.filter = `brightness(${lerp(1, 0.92, fadeOut)})`;
+      if (t < 3.55) {
+        patrikaClosed.style.opacity = "1";
+        patrikaClosed.style.visibility = "visible";
+        book.style.opacity = "0";
+        book.style.visibility = "hidden";
+      } else {
+        patrikaClosed.style.opacity = "0";
+        patrikaClosed.style.visibility = "hidden";
+        book.style.opacity = "1";
+        book.style.visibility = "visible";
+        bookLeft.style.transform = `rotateY(${lerp(0, -88, openE)}deg)`;
+        bookRight.style.transform = `rotateY(${lerp(0, 88, openE)}deg)`;
+        spine.style.opacity = String(lerp(0.85, 0.15, openE));
+        const fadeOut = clamp((t - 6.5) / 1.0, 0, 1);
+        book.style.filter = `brightness(${lerp(1, 0.9, fadeOut)})`;
+      }
 
       // Calendar marker: day 1 → 4 between 9s and 14.5s
       const cal = document.getElementById("scene-calendar");
@@ -780,15 +807,13 @@
         marker.style.top = `${y}px`;
         marker.style.opacity = t < 8.2 ? "0" : "1";
 
-        // Highlight wedding day text when arrived
-        document.querySelectorAll(".cal-day").forEach((el) => {
-          const d = parseInt(el.dataset.day || "0", 10);
-          if (d === 4 && moveT > 0.92) {
-            el.querySelector("span").style.color = "#fff";
-          } else if (d) {
-            el.querySelector("span").style.color = "";
-          }
-        });
+        const weddingCell = grid.querySelector('[data-day="4"]');
+        if (weddingCell) {
+          weddingCell.classList.toggle("lit", moveT > 0.92);
+          // Keep the "4" readable: white on marker once lit
+          const span = weddingCell.querySelector("span");
+          if (span) span.style.color = moveT > 0.92 ? "#fff" : "";
+        }
         caption.style.opacity = moveT > 0.85 ? String(easeInOut(clamp((moveT - 0.85) / 0.15, 0, 1))) : "0";
       }
 

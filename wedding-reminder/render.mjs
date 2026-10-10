@@ -12,7 +12,8 @@ const FRAMES = path.join(__dirname, "frames");
 const OUT = path.join(__dirname, "output", "reet-ka-ishq-1-month-to-go.mp4");
 const WIDTH = 1920;
 const HEIGHT = 1080;
-const FPS = 30;
+  // 24fps keeps quality high while roughly cutting render time vs 30fps
+  const FPS = 24;
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
