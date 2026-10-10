@@ -13,6 +13,7 @@
       --rose: #c48a7a;
       --cream: #f7f1ea;
       --ivory: #fffaf5;
+      --stage-ratio: 16 / 9;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,11 +27,16 @@
       color: var(--navy);
     }
 
+    body.format-desktop { --stage-ratio: 16 / 9; }
+    body.format-mobile { --stage-ratio: 9 / 16; }
+    body.format-square { --stage-ratio: 1 / 1; }
+
     #stage-wrap {
       width: 100vw;
       height: 100vh;
       display: grid;
       place-items: center;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
       background:
         radial-gradient(ellipse at 30% 20%, #1e2a45 0%, transparent 50%),
         radial-gradient(ellipse at 70% 80%, #2a1f2e 0%, transparent 45%),
@@ -38,12 +44,34 @@
     }
 
     #stage {
-      width: min(96vw, calc(96vh * 16 / 9));
-      aspect-ratio: 16 / 9;
+      /* Fill the viewport while keeping the active aspect ratio */
+      width: min(100vw, calc(100vh * (var(--stage-w) / var(--stage-h))));
+      height: min(100vh, calc(100vw * (var(--stage-h) / var(--stage-w))));
+      aspect-ratio: var(--stage-ratio);
       position: relative;
       overflow: hidden;
       background: var(--cream);
       box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+      border-radius: 0;
+    }
+
+    body.format-desktop {
+      --stage-w: 16;
+      --stage-h: 9;
+    }
+    body.format-mobile {
+      --stage-w: 9;
+      --stage-h: 16;
+    }
+    body.format-square {
+      --stage-w: 1;
+      --stage-h: 1;
+    }
+
+    body:not(.render-mode) #stage {
+      width: min(96vw, calc(96vh * (var(--stage-w) / var(--stage-h))));
+      height: auto;
+      max-height: 96vh;
       border-radius: 4px;
     }
 
@@ -61,19 +89,22 @@
     .tagline {
       position: absolute;
       left: 50%;
-      bottom: 7%;
+      bottom: 6.5%;
+      width: min(90%, 34rem);
       transform: translateX(-50%) translateY(10px);
       z-index: 6;
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.35rem, 2.8vw, 2.15rem);
+      font-size: clamp(1.15rem, 4.2vmin, 2.15rem);
       font-weight: 600;
       letter-spacing: 0.02em;
       color: #fff;
       text-align: center;
       text-shadow: 0 2px 18px rgba(0,0,0,0.45);
-      white-space: nowrap;
+      white-space: normal;
+      line-height: 1.2;
       opacity: 0;
       pointer-events: none;
+      padding: 0 0.5rem;
     }
 
     .tagline.on-light {
@@ -86,12 +117,20 @@
       left: 0;
       right: 0;
       bottom: 0;
-      height: 28%;
+      height: 26%;
       z-index: 5;
       background: linear-gradient(to top, rgba(15, 24, 41, 0.72) 0%, rgba(15, 24, 41, 0.2) 55%, transparent 100%);
       pointer-events: none;
       opacity: 0;
     }
+
+    body.format-mobile .tagline {
+      bottom: 8%;
+      font-size: clamp(1.25rem, 5.2vmin, 2rem);
+      width: 88%;
+    }
+
+    body.format-mobile .tagline-bar { height: 22%; }
 
     /* ——— Patrika ——— */
     #scene-patrika {
@@ -141,17 +180,20 @@
       font-weight: 400;
       letter-spacing: 0.38em;
       text-transform: uppercase;
-      font-size: clamp(0.55rem, 1vw, 0.72rem);
+      font-size: clamp(0.55rem, 2.2vmin, 0.78rem);
       color: var(--rose);
     }
 
     .logo-wrap {
-      width: min(32%, 250px);
+      width: min(34%, 42vmin);
       aspect-ratio: 1;
       display: grid;
       place-items: center;
       filter: drop-shadow(0 10px 24px rgba(26, 39, 68, 0.12));
     }
+
+    body.format-mobile .logo-wrap { width: min(58%, 52vmin); }
+    body.format-mobile .patrika-page { inset: 5% 6%; }
 
     .logo-wrap img {
       width: 100%;
@@ -161,7 +203,7 @@
 
     .patrika-names {
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.35rem, 2.8vw, 2.1rem);
+      font-size: clamp(1.25rem, 4.2vmin, 2.1rem);
       font-weight: 600;
       color: var(--navy);
     }
@@ -227,13 +269,18 @@
     }
 
     .cal-card {
-      width: min(68%, 680px);
+      width: min(68%, 78vmin);
       background: var(--ivory);
       border: 1px solid rgba(26, 39, 68, 0.1);
-      padding: clamp(1.1rem, 2.2vw, 1.8rem);
+      padding: clamp(1rem, 3.2vmin, 1.8rem);
       box-shadow: 0 18px 44px rgba(26, 39, 68, 0.1);
       position: relative;
       will-change: transform, opacity;
+    }
+
+    body.format-mobile .cal-card {
+      width: min(88%, 92%);
+      margin-bottom: 8%;
     }
 
     .cal-header {
@@ -247,7 +294,7 @@
 
     .cal-month {
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-size: clamp(1.4rem, 4.5vmin, 2.2rem);
       font-weight: 700;
     }
 
@@ -280,7 +327,7 @@
       display: grid;
       place-items: center;
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+      font-size: clamp(0.85rem, 3vmin, 1.25rem);
       position: relative;
       border-radius: 6px;
     }
@@ -291,8 +338,8 @@
 
     .day-marker {
       position: absolute;
-      width: clamp(32px, 4vw, 46px);
-      height: clamp(32px, 4vw, 46px);
+      width: clamp(30px, 7vmin, 48px);
+      height: clamp(30px, 7vmin, 48px);
       border-radius: 8px;
       background: var(--navy);
       z-index: 0;
@@ -351,6 +398,19 @@
       width: 30%;
     }
 
+    body.format-mobile .polaroid.a {
+      width: 58%;
+      transform: rotate(-5deg) translate(-6%, -18%);
+    }
+
+    body.format-mobile .polaroid.b {
+      width: 52%;
+      transform: rotate(4deg) translate(8%, 16%);
+    }
+
+    body.format-square .polaroid.a { width: 42%; }
+    body.format-square .polaroid.b { width: 38%; }
+
     /* ——— Finale ——— */
     #scene-finale {
       background:
@@ -370,9 +430,11 @@
     }
 
     .finale-logo {
-      width: min(26%, 200px);
+      width: min(28%, 36vmin);
       aspect-ratio: 1;
     }
+
+    body.format-mobile .finale-logo { width: min(48%, 46vmin); }
 
     .finale-logo img {
       width: 100%;
@@ -382,12 +444,12 @@
 
     .finale-title {
       font-family: "Cormorant Garamond", serif;
-      font-size: clamp(1.7rem, 3.6vw, 2.7rem);
+      font-size: clamp(1.6rem, 5vmin, 2.7rem);
       font-weight: 700;
     }
 
     .finale-date {
-      font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+      font-size: clamp(0.8rem, 2.4vmin, 1.05rem);
       letter-spacing: 0.28em;
       text-transform: uppercase;
       color: var(--rose);
@@ -396,23 +458,31 @@
     .finale-place {
       font-family: "Cormorant Garamond", serif;
       font-style: italic;
-      font-size: clamp(1.05rem, 1.9vw, 1.4rem);
+      font-size: clamp(1rem, 3.2vmin, 1.4rem);
     }
 
     #hud {
       position: fixed;
-      left: 16px;
-      bottom: 16px;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
       z-index: 50;
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       align-items: center;
+      justify-content: center;
       background: rgba(15, 24, 41, 0.82);
       color: #fff;
       padding: 8px 12px;
       border-radius: 999px;
       font-size: 12px;
       backdrop-filter: blur(8px);
+      width: max-content;
+      max-width: calc(100vw - 24px);
+      margin: 0 auto;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     #hud button {
@@ -424,6 +494,18 @@
       cursor: pointer;
       font-family: inherit;
       font-size: 12px;
+    }
+
+    #hud .fmt-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #fff;
+    }
+
+    #hud .fmt-btn.active {
+      background: #fff;
+      color: var(--navy);
+      border-color: #fff;
     }
 
     .render-mode #hud { display: none !important; }
@@ -545,12 +627,35 @@
 
   <div id="hud">
     <button id="btn-play" type="button">Play</button>
+    <button class="fmt-btn" id="btn-desktop" type="button" data-fmt="desktop">Desktop</button>
+    <button class="fmt-btn" id="btn-mobile" type="button" data-fmt="mobile">Mobile</button>
     <span id="time-label">0.0s / 34s</span>
   </div>
 
   <script>
     const DURATION = 34;
+    const params = new URLSearchParams(location.search);
     const scenes = [...document.querySelectorAll(".scene")];
+
+    function detectFormat() {
+      const forced = params.get("format");
+      if (forced === "mobile" || forced === "desktop" || forced === "square") return forced;
+      if (window.matchMedia("(orientation: portrait), (max-width: 820px)").matches) return "mobile";
+      return "desktop";
+    }
+
+    function applyFormat(fmt) {
+      document.body.classList.remove("format-desktop", "format-mobile", "format-square");
+      document.body.classList.add(`format-${fmt}`);
+      document.querySelectorAll(".fmt-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.fmt === fmt);
+      });
+      window.__format = fmt;
+      // Recenter calendar marker after layout change
+      requestAnimationFrame(() => {
+        if (typeof render === "function") render(typeof current === "number" ? current : 0);
+      });
+    }
 
     const grid = document.getElementById("cal-grid");
     ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach((d) => {
@@ -698,7 +803,7 @@
         }
       }
 
-      // Couple polaroids
+      // Couple polaroids (layout shifts for portrait)
       const couple = document.getElementById("scene-couple");
       if (couple.style.visibility !== "hidden") {
         const start = 9.8;
@@ -706,11 +811,18 @@
         const e = easeOut(local);
         const a = couple.querySelector(".polaroid.a");
         const b = couple.querySelector(".polaroid.b");
+        const mobile = document.body.classList.contains("format-mobile");
         a.style.opacity = String(e);
         b.style.opacity = String(clamp((local - 0.12) / 0.7, 0, 1));
-        a.style.transform = `rotate(${lerp(-10, -6, e)}deg) translate(${lerp(-34, -28, e)}%, ${lerp(10, 4, e)}%)`;
-        const e2 = easeOut(clamp((local - 0.12) / 0.7, 0, 1));
-        b.style.transform = `rotate(${lerp(10, 5, e2)}deg) translate(${lerp(30, 22, e2)}%, ${lerp(-8, -2, e2)}%)`;
+        if (mobile) {
+          a.style.transform = `rotate(${lerp(-9, -5, e)}deg) translate(${lerp(-12, -6, e)}%, ${lerp(-10, -18, e)}%)`;
+          const e2 = easeOut(clamp((local - 0.12) / 0.7, 0, 1));
+          b.style.transform = `rotate(${lerp(8, 4, e2)}deg) translate(${lerp(14, 8, e2)}%, ${lerp(24, 16, e2)}%)`;
+        } else {
+          a.style.transform = `rotate(${lerp(-10, -6, e)}deg) translate(${lerp(-34, -28, e)}%, ${lerp(10, 4, e)}%)`;
+          const e2 = easeOut(clamp((local - 0.12) / 0.7, 0, 1));
+          b.style.transform = `rotate(${lerp(10, 5, e2)}deg) translate(${lerp(30, 22, e2)}%, ${lerp(-8, -2, e2)}%)`;
+        }
       }
 
       // Ken Burns on story backgrounds — gentle, continuous
@@ -773,16 +885,23 @@
       if (playing) pause(); else play();
     });
 
+    document.querySelectorAll(".fmt-btn").forEach((btn) => {
+      btn.addEventListener("click", () => applyFormat(btn.dataset.fmt));
+    });
+
     window.seekTo = (t) => {
       pause();
       current = clamp(t, 0, DURATION);
       render(current);
     };
     window.getDuration = () => DURATION;
+    window.getFormat = () => window.__format || detectFormat();
+    window.setFormat = applyFormat;
     window.playVideo = play;
     window.__ready = true;
 
     function boot() {
+      applyFormat(detectFormat());
       render(0);
       requestAnimationFrame(() => render(0));
     }
@@ -790,9 +909,16 @@
     if (document.fonts?.ready) document.fonts.ready.then(boot);
     else boot();
 
-    const params = new URLSearchParams(location.search);
     if (params.has("render")) document.body.classList.add("render-mode");
     if (params.has("autoplay")) window.addEventListener("load", () => setTimeout(play, 300));
+
+    // Live preview: follow device orientation unless format was forced in the URL
+    if (!params.get("format")) {
+      const mq = window.matchMedia("(orientation: portrait), (max-width: 820px)");
+      const onChange = () => applyFormat(detectFormat());
+      if (mq.addEventListener) mq.addEventListener("change", onChange);
+      else mq.addListener(onChange);
+    }
   </script>
 </body>
 </html>

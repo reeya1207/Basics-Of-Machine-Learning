@@ -16,15 +16,23 @@ npm install
 npm start
 ```
 
-Open the local URL, then click **Play**.
+- Live animation: `/public/index.html` (Desktop / Mobile toggle in the control bar)
+- Watch page (auto-picks format): `/public/watch.html`
 
-## Render MP4
+On phones the player switches to **9:16**; on desktops it uses **16:9**.
+
+## Render MP4s
 
 ```bash
-npm run render
+npm run render            # both desktop + mobile
+npm run render:desktop    # 1920×1080 only
+npm run render:mobile     # 1080×1920 only
 ```
 
-Output: `output/reet-ka-ishq-1-month-to-go.mp4` (1920×1080, 30fps).
+Outputs:
+- `output/reet-ka-ishq-desktop.mp4` — 16:9 desktop / YouTube / WhatsApp landscape  
+- `output/reet-ka-ishq-mobile.mp4` — 9:16 Stories / Reels / WhatsApp status  
+- copies also in `public/videos/` for the watch page
 
 ## Assets
 

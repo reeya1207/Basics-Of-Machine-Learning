@@ -1,6 +1,7 @@
 node_modules/
 frames/
+frames-desktop/
+frames-mobile/
 smoke/
 .DS_Store
 *.log
-node_modules/

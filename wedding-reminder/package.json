@@ -5,8 +5,10 @@
   "type": "module",
   "description": "Creative 50s wedding reminder video for #Reet_Ka_IshQ — Mahabaleshwar, 4 Dec 2026",
   "scripts": {
-    "start": "npx --yes serve public -l 5173",
-    "render": "node render.mjs"
+    "start": "npx --yes serve . -l 5173",
+    "render": "node render.mjs",
+    "render:desktop": "node render.mjs desktop",
+    "render:mobile": "node render.mjs mobile"
   },
   "dependencies": {
     "puppeteer-core": "^24.2.0"
