@@ -1,0 +1,14 @@
+{
+  "name": "wedding-reminder",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Creative 50s wedding reminder video for #Reet_Ka_IshQ — Mahabaleshwar, 4 Dec 2026",
+  "scripts": {
+    "start": "npx --yes serve public -l 5173",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "puppeteer-core": "^24.2.0"
+  }
+}
